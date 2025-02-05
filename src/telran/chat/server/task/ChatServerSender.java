@@ -38,7 +38,6 @@ public class ChatServerSender implements Runnable{
                         clientOutStream.writeObject(message);
                     } catch (IOException e) {
                         iterator.remove();
-                        throw new RuntimeException(e);
                     }
                 }
             }
