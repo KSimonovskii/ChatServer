@@ -2,6 +2,7 @@ package telran.chat;
 
 import telran.chat.server.mediation.BlkQueue;
 import telran.chat.server.mediation.BlkQueueImpl;
+import telran.model.Message;
 import telran.chat.server.task.ChatServerReceiver;
 import telran.chat.server.task.ChatServerSender;
 
@@ -17,7 +18,7 @@ public class ChatServerAppl {
     public static void main(String[] args) throws InterruptedException {
 
         int port = Integer.parseInt(args[0]);
-        BlkQueue<String> messageBox = new BlkQueueImpl<>(10);
+        BlkQueue<Message> messageBox = new BlkQueueImpl<>(10);
         ChatServerSender sender = new ChatServerSender(messageBox);
         Thread senderThread = new Thread(sender);
         senderThread.setDaemon(true);

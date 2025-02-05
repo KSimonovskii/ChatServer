@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Message:jar">
+    <output-path>$PROJECT_DIR$/../../Message</output-path>
+    <root id="archive" name="ls36_ChatServer.jar">
+      <element id="module-output" name="ls36_ChatServer" />
+    </root>
+  </artifact>
+</component>

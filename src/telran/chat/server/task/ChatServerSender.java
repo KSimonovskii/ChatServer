@@ -1,9 +1,10 @@
 package telran.chat.server.task;
 
+import telran.model.Message;
 import telran.chat.server.mediation.BlkQueue;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -11,32 +12,34 @@ import java.util.Set;
 
 public class ChatServerSender implements Runnable{
 
-    private final BlkQueue<String> messageBox;
-    private Set<PrintWriter> clients;
 
-    public ChatServerSender(BlkQueue<String> messageBox) {
+    private final BlkQueue<Message> messageBox;
+    private Set<ObjectOutputStream> clients;
+
+    public ChatServerSender(BlkQueue<Message> messageBox) {
         this.messageBox = messageBox;
         clients = new HashSet<>();
     }
 
     public synchronized boolean addClient(Socket socket) throws IOException {
-        return clients.add(new PrintWriter(socket.getOutputStream(), true));
+        return clients.add(new ObjectOutputStream(socket.getOutputStream()));
     }
 
     @Override
     public void run() {
 
         while (true) {
-            String message = messageBox.pop();
+            Message message = messageBox.pop();
             synchronized (this) {
-                Iterator<PrintWriter> iterator = clients.iterator();
+                Iterator<ObjectOutputStream> iterator = clients.iterator();
                 while (iterator.hasNext()){
-                    PrintWriter clientWriter = iterator.next();
-                    clientWriter.println(message);
-                    if (clientWriter.checkError()) {
+                    ObjectOutputStream clientOutStream = iterator.next();
+                    try {
+                        clientOutStream.writeObject(message);
+                    } catch (IOException e) {
                         iterator.remove();
+                        throw new RuntimeException(e);
                     }
-
                 }
             }
         }

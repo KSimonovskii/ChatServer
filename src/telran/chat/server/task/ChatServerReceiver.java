@@ -1,19 +1,17 @@
 package telran.chat.server.task;
 
+import telran.model.Message;
 import telran.chat.server.mediation.BlkQueue;
-import telran.chat.server.mediation.BlkQueueImpl;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.net.Socket;
 
 public class ChatServerReceiver implements Runnable{
 
     private final Socket socket;
-    private final BlkQueue<String> messageBox;
+    private final BlkQueue<Message> messageBox;
 
-    public ChatServerReceiver(Socket socket, BlkQueue<String> messageBox) {
+    public ChatServerReceiver(Socket socket, BlkQueue<Message> messageBox) {
         this.socket = socket;
         this.messageBox = messageBox;
     }
@@ -21,9 +19,10 @@ public class ChatServerReceiver implements Runnable{
     @Override
     public void run() {
         try (Socket socket = this.socket){
-            BufferedReader socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            ObjectInputStream socketInput = new ObjectInputStream(socket.getInputStream());
+
             while (true){
-                String msg = socketReader.readLine();
+                Message msg = (Message) socketInput.readObject();
                 if (msg == null){
                     System.out.println("Connection " + socket.getInetAddress().getHostAddress() + ": " + socket.getPort() + " is closed");
                     break;
@@ -31,6 +30,7 @@ public class ChatServerReceiver implements Runnable{
                 messageBox.push(msg);
             }
         } catch (Exception e){
+            e.getMessage();
             e.printStackTrace();
         }
 

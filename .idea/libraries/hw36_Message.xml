@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="hw36_Message">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../Message/message/hw36_Message.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
