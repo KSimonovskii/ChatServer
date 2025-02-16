@@ -38,6 +38,7 @@ public class ChatServerSender implements Runnable{
                         clientOutStream.writeObject(message);
                     } catch (IOException e) {
                         iterator.remove();
+                        System.out.println("Size = " + clients.size());
                     }
                 }
             }

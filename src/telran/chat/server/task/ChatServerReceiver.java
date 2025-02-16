@@ -3,6 +3,7 @@ package telran.chat.server.task;
 import telran.model.Message;
 import telran.chat.server.mediation.BlkQueue;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 
@@ -23,14 +24,11 @@ public class ChatServerReceiver implements Runnable{
 
             while (true){
                 Message msg = (Message) socketInput.readObject();
-                if (msg == null){
-                    System.out.println("Connection " + socket.getInetAddress().getHostAddress() + ": " + socket.getPort() + " is closed");
-                    break;
-                }
                 messageBox.push(msg);
             }
+        } catch (IOException e) {
+            System.out.println("Connection " + socket.getInetAddress() + ": " + socket.getPort() + " is closed");
         } catch (Exception e){
-            e.getMessage();
             e.printStackTrace();
         }
 
